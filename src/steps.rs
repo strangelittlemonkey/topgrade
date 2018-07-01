@@ -5,27 +5,9 @@ use std::path::PathBuf;
 use std::process::Command;
 use utils::is_ancestor;
 
-const EMACS_UPGRADE: &str = include_str!("emacs.el");
-
 pub fn run_cargo_update(cargo_update: &PathBuf) -> Result<(), failure::Error> {
     Command::new(&cargo_update)
         .args(&["install-update", "--git", "--all"])
-        .spawn()?
-        .wait()?
-        .check()?;
-
-    Ok(())
-}
-
-pub fn run_emacs(emacs: &PathBuf, init: &PathBuf) -> Result<(), failure::Error> {
-    Command::new(&emacs)
-        .args(&[
-            "--batch",
-            "-l",
-            init.to_str().unwrap(),
-            "--eval",
-            EMACS_UPGRADE,
-        ])
         .spawn()?
         .wait()?
         .check()?;

@@ -26,6 +26,7 @@ mod unix;
 mod windows;
 
 mod config;
+mod emacs;
 mod git;
 mod npm;
 mod report;
@@ -120,7 +121,7 @@ fn run() -> Result<(), Error> {
         }
     }
 
-    git_repos.insert(home_path(".emacs.d"));
+    git_repos.insert(emacs::config_dir());
 
     #[cfg(unix)]
     {
@@ -170,10 +171,10 @@ fn run() -> Result<(), Error> {
     }
 
     if let Some(emacs) = utils::which("emacs") {
-        let init_file = home_path(".emacs.d/init.el");
+        let init_file = emacs::init_file();
         if init_file.exists() {
             terminal.print_separator("Emacs");
-            run_emacs(&emacs, &init_file).report("Emacs", &mut reports);
+            emacs::upgrade(&emacs, &init_file).report("Emacs", &mut reports);
         }
     }
 
